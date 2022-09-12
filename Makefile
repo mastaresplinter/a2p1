@@ -1,7 +1,7 @@
 # Makefile for Raspberry Pi 3
 # Updated by Wagner Morais Aug 22
 
-MAINFILE = a2p2
+MAINFILE = a2p1
 OBJS	=  lib/piface.o
 OBJS	=  lib/rpi-gpio.o lib/rpi-armtimer.o lib/rpi-interrupts.o lib/rpi-systimer.o 
 OBJS	+= lib/startup.o lib/syscalls.o 

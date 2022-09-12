@@ -195,6 +195,7 @@ uint8_t piface_getc(void){
 void piface_putc(char c)
 {
 	/* write character */
+	//lcd_write_cmd();
 }
 
 /** @brief Writes a string
@@ -209,5 +210,6 @@ void piface_puts(char s[])
 void piface_clear(void)
 {
     /* clear display */
+	lcd_write_cmd(0x01);
 }
 

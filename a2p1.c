@@ -3,12 +3,19 @@
  */
 
 #include <stdio.h>
-#include "piface.h"
-#include "led.h"
+#include "piface.c"
+//#include "led.h"
 
 int main()
 {
-	piface_init();
+	//piface_init();
+	//lcd_write_cmd(0x24);
+	//lcd_write_cmd(0x28);
+	while (1)
+	{
+		/* code */
+	}
+	
 	// piface_clear();
 	// piface_puts("Short string");
 	// piface_puts("This is a long string");
