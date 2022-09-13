@@ -51,6 +51,12 @@
 #define LCD_RS      (1 << 6)
 #define LCD_BL      (1 << 7)
 
+/*Display Cursor Positions*/
+#define SET_DDRAM_ADR   (1<<7)
+#define CUR_LINE_1      0x00
+#define CUR_LINE_2      0x40
+
+
 #define PUTTOLDC(fmt, args...){ \
 	char s[9]; \
     sprintf(s, fmt, ##args); \

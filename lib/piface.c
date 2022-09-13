@@ -194,15 +194,49 @@ uint8_t piface_getc(void){
  */
 void piface_putc(char c)
 {
-	/* write character */
-	//lcd_write_cmd();
+	lcd_write_data((uint8_t)c);
 }
 
 /** @brief Writes a string
  */
 void piface_puts(char s[])
 {
-    /* write string */
+    int i = 0;
+	int col = 0;		//Column of current line
+	while (s[i] != '\0')
+	{
+		if (s[i] == '\n')
+		{
+			lcd_write_cmd(SET_DDRAM_ADR | (1 << 6));
+			col = 0;
+			i++;
+		
+		}
+		else if (col > 16)
+		{
+			lcd_write_cmd(SET_DDRAM_ADR | (1 << 6));
+			col = 0;
+		}
+		else
+		{
+			lcd_write_data((uint8_t)s[i]);
+			col++;
+			i++;
+		}
+		
+	}
+}
+/** @brief Sets the cursor position
+ * 
+ */
+void piface_set_cursor(uint8_t col, uint8_t row)
+{
+	if (col < 8 && row < 2)
+	{
+		lcd_write_cmd(SET_DDRAM_ADR | (col *5) | (row << 6));
+	}
+	else
+		fprintf(stderr, "Error: Invalid cursor position given.");
 }
 
 /** @brief Clears the display
