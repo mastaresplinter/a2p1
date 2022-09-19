@@ -126,8 +126,14 @@ static void lcd_pulse(uint8_t val){
 }
 
 static void lcd_write_cmd(uint8_t cmd){
-    /* write high nibble */
+    /*Wait til' busyflag is 0*/
+	lcd_busy_wait();
+
+	/* write high nibble */
 	lcd_pulse( LCD_BL | (cmd >> 4)   );
+
+	/*Wait til' busyflag is 0*/
+	lcd_busy_wait();
 
     /* write low nibble */
     lcd_pulse( LCD_BL | (cmd & 0x0F) );
@@ -185,18 +191,32 @@ uint8_t piface_getc(void){
 	return mcp_read(MCP_GPIOA);
 }
 
-
-
-
+/** @brief Sets the cursor position
+ * 
+ */
+void piface_set_cursor(uint8_t col, uint8_t row)
+{
+	if (col < 16 && row < 2)
+	{
+		lcd_write_cmd(SET_DDRAM_ADR | (col) | (row << 6));
+	}
+	else
+		fprintf(stderr, "Error: Invalid cursor position given.");
+}
 
 
 /** @brief Writes a character
  */
 void piface_putc(char c)
 {
-	if (c == '\n')
+	if (((int)c < 32 || (int)c > 126) && c != '\n')
 	{
-		lcd_write_cmd(SET_DDRAM_ADR | (1 << 6));
+		fprintf(stderr, "Error: Character code outside of scope.");
+		return;
+	}
+	else if (c == '\n')
+	{
+		piface_set_cursor(0,1);
 	}
 	else
 	{
@@ -208,35 +228,34 @@ void piface_putc(char c)
  */
 void piface_puts(char s[])
 {
-    int i = 0;
-	int col = 0;		//Column of current line
-	while (s[i] != '\0')
+	if (s == NULL)
 	{
-		if (col > 16)
+		fprintf(stderr, "Error: Null given to piface_puts()");
+		return;
+	}
+	
+	piface_set_cursor(0,0);		//Always start at top left on display
+	int col = 0;				//Column of current line
+	while (*s)		//While we have a next character in the array
+	{
+		if (col == 16)	//Check if first line is filled
 		{
 			piface_putc('\n');
-			piface_putc(s[i]);	
 			col = 0;
 		}
 		else
 		{
-			piface_putc(s[i]);
+			if(*s == '\n')
+				{
+					piface_putc(*s);
+					s++;
+					col = 0;
+				}
+			piface_putc(*s);	//Write current character to the display
 			col++;
-			i++;
+			s++;
 		}
 	}
-}
-/** @brief Sets the cursor position
- * 
- */
-void piface_set_cursor(uint8_t col, uint8_t row)
-{
-	if (col < 8 && row < 2)
-	{
-		lcd_write_cmd(SET_DDRAM_ADR | (col *5) | (row << 6));
-	}
-	else
-		fprintf(stderr, "Error: Invalid cursor position given.");
 }
 
 /** @brief Clears the display
