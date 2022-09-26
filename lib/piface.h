@@ -53,8 +53,6 @@
 
 /*Display Cursor Positions*/
 #define SET_DDRAM_ADR   (1<<7)
-#define CUR_LINE_1      0x00
-#define CUR_LINE_2      0x40
 
 
 #define PUTTOLDC(fmt, args...){ \
@@ -108,7 +106,7 @@ void piface_set_cursor(uint8_t col, uint8_t row);
  *
  *	@return void
  *
- *  Pre-condition: If the integer value of c is less than 32 or greater than 126 an error will occur.
+ *  Pre-condition: If the integer value of c is less than 32 or greater than 126 and is not '\n' an error will occur.
  * 
  *  Post-condition: none
  *

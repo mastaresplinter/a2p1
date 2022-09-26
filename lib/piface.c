@@ -139,10 +139,10 @@ static void lcd_write_cmd(uint8_t cmd){
     lcd_pulse( LCD_BL | (cmd & 0x0F) );
 
     LCD_DELAY;
-
 }
 
 static void lcd_write_data(uint8_t data){
+
 	lcd_busy_wait();
 
     /* write high nibble */
@@ -236,7 +236,7 @@ void piface_puts(char s[])
 	
 	piface_set_cursor(0,0);		//Always start at top left on display
 	int col = 0;				//Column of current line
-	while (*s)		//While we have a next character in the array
+	while (*s)					//While we have a next character in the array
 	{
 		if (col == 16)	//Check if first line is filled
 		{
